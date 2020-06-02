@@ -21,10 +21,10 @@ then
   echo "0 nf_conntrack connections=$connections;$warn;$crit;$max_connections $connections/$max_connections connections"
 elif [ $connections -ge $warn ] && [ $connections -lt $crit ]
 then
-  echo "1 nf_conntrack connections=$connections;$warn;$crit;$max_connections nf_conntrack filled by at least $warn % - $connections/$max_connections connections - consider raising net.netfilter.nf_conntrack_max in /etc/pve/nodes/<host>/host.fw"
+  echo "1 nf_conntrack connections=$connections;$warn;$crit;$max_connections nf_conntrack filled by at least $warn % - $connections/$max_connections connections - consider raising net.netfilter.nf_conntrack_max"
 elif [ $connections -ge $crit ]
 then
-  echo "2 nf_conntrack connections=$connections;$warn;$crit;$max_connections nf_conntrack filled by at least $crit % - $connections/$max_connections connections - consider raising net.netfilter.nf_conntrack_max in /etc/pve/nodes/<host>/host.fw"
+  echo "2 nf_conntrack connections=$connections;$warn;$crit;$max_connections nf_conntrack filled by at least $crit % - $connections/$max_connections connections - consider raising net.netfilter.nf_conntrack_max"
 else
   echo "3 nf_conntrack connections=$connections unknown"
 
