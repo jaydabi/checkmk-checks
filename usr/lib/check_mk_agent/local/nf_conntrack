@@ -1,0 +1,33 @@
+#!/bin/bash
+
+#
+# nf_conntrack_max check
+# type: check_mk local check
+#
+# This script checks for the nf_conntrack table if it is too full.
+#
+
+WARN=70
+CRIT=80
+
+connections=$(cat /proc/sys/net/netfilter/nf_conntrack_count)
+max_connections=$(cat /proc/sys/net/netfilter/nf_conntrack_max)
+
+warn=$(awk -v warn=$WARN -v max_connections=$max_connections 'BEGIN {print int(max_connections * warn / 100)}')
+crit=$(awk -v crit=$CRIT -v max_connections=$max_connections 'BEGIN {print int(max_connections * crit / 100)}')
+
+if [ $connections -lt $warn ]
+then
+  echo "0 nf_conntrack connections=$connections;$warn;$crit;$max_connections $connections/$max_connections connections"
+elif [ $connections -ge $warn ] && [ $connections -lt $crit ]
+then
+  echo "1 nf_conntrack connections=$connections;$warn;$crit;$max_connections nf_conntrack filled by at least $warn % - $connections/$max_connections connections - consider raising net.netfilter.nf_conntrack_max in /etc/pve/nodes/<host>/host.fw"
+elif [ $connections -ge $crit ]
+then
+  echo "2 nf_conntrack connections=$connections;$warn;$crit;$max_connections nf_conntrack filled by at least $crit % - $connections/$max_connections connections - consider raising net.netfilter.nf_conntrack_max in /etc/pve/nodes/<host>/host.fw"
+else
+  echo "3 nf_conntrack connections=$connections unknown"
+
+fi
+
+exit 0
