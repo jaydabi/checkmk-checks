@@ -7,6 +7,13 @@
 WARN=70
 CRIT=80
 
+# check for dependencies
+
+if [ ! -f /proc/sys/net/netfilter/nf_conntrack_count ]; then
+  # expect nt_conntrack not to be used
+  exit 0
+fi
+
 connections=$(cat /proc/sys/net/netfilter/nf_conntrack_count)
 max_connections=$(cat /proc/sys/net/netfilter/nf_conntrack_max)
 
